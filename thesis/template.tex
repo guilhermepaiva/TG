@@ -21,11 +21,29 @@
 %%         * Paginação
 %%           oneside - para impressão em face única
 %%           twoside - para impressão em frente e verso (padrão)
-\documentclass{ufpethesis}
+%\documentclass{ufpethesis}
+\documentclass[bsc,oneside]{ufpethesis}
 
 %% Preâmbulo:
 %% coloque aqui o seu preâmbulo LaTeX, i.e., declaração de pacotes,
 %% (re)definições de macros, medidas, etc.
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{subfigure}
+\usepackage{appendix}
+
+\algsetup{linenosize=\small,linenodelimiter=.}
+\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
+
+\usepackage{amsthm}
+
+% fim do preâmbulo
+
+
 
 %% Identificação:
 
@@ -160,7 +178,7 @@ Dedico este trabalho à ...
 % "capitulo1.tex", "capitulo2.tex", ... "capituloN.tex" e depois
 % incluí-los com:
 \include{capitulo-1/capitulo1}
-% \include{capitulo2}
+\include{capitulo-2/capitulo2}
 % ...
 % \include{capituloN}
 
@@ -190,7 +208,7 @@ Dedico este trabalho à ...
 % BibTeXpress em www.cin.ufpe.br/~paguso/bibtexpress
 \nocite{*}
 \bibliographystyle{alpha}
-\bibliography{biblio}
+\bibliography{bibliografia/bibliografia}
 
 % Cólofon
 % Inclui uma pequena nota com referência à UFPEThesis

@@ -1,0 +1,21 @@
+\chapter{Combinação de Classificadores}
+Neste capítulo, será mostrado os principais algoritmos de combinação de classificadores, Bagging e Boosting. Cada seção aborda os conceitos básicos de cada algoritmo, o seu pseudo-código e suas características principais, bem como as variações mais conhecidas. Ao final, de maneira mais detalhada, será analisado o algoritmo ICS-Bagging com foco nas possíveis métricas de diversidade que este algoritmo pode usar. 
+
+\section{Bagging}
+\textit{Bagging} é um algoritmo \cite{bagging:1996} de combinação de classificadores que foi desenvolvido com o intuito de melhor a acurácia na tarefa de classificação. O principal conceito deste algoritmo é o \textit{bootstrap aggregation}, na qual o conjunto de treinamento para cada classificador é construído a partir de uma amostra escolhida aleatoriamente do conjunto de treinamento. Os classificadores são então combinados e ao se apresentar uma nova instância, cada classificador fornece como resultado a classe na qual essa nova instância pertence. Normalmente, a classe que obteve mais votos, é dita como sendo a classe desta instância. 
+
+
+\begin{algorithm}
+\caption{Bagging}
+\label{alg:bagging}
+\begin{algorithmic}
+\FORALL {instância $e_i$ em $T$}
+		\STATE Aplique o KNN sobre $e_i$ utilizando $T$ como treinamento
+		\IF {$e_i$ foi classificado erroneamente}
+			\STATE salve $e_i$ em $L$
+		\ENDIF
+	\ENDFOR
+	\STATE Remova de $T$ os elementos de $L$
+	\RETURN $T$
+\end{algorithmic}
+\end{algorithm}
