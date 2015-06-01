@@ -2,20 +2,100 @@
 Neste capítulo, será mostrado os principais algoritmos de combinação de classificadores, Bagging e Boosting. Cada seção aborda os conceitos básicos de cada algoritmo, o seu pseudo-código e suas características principais, bem como as variações mais conhecidas. Ao final, de maneira mais detalhada, será analisado o algoritmo ICS-Bagging com foco nas possíveis métricas de diversidade que este algoritmo pode usar. 
 
 \section{Bagging}
-\textit{Bagging} é um algoritmo \cite{bagging:1996} de combinação de classificadores que foi desenvolvido com o intuito de melhor a acurácia na tarefa de classificação. O principal conceito deste algoritmo é o \textit{bootstrap aggregation}, na qual o conjunto de treinamento para cada classificador é construído a partir de uma amostra escolhida aleatoriamente do conjunto de treinamento. Os classificadores são então combinados e ao se apresentar uma nova instância, cada classificador fornece como resultado a classe na qual essa nova instância pertence. Normalmente, a classe que obteve mais votos, é dita como sendo a classe desta instância. 
+\textit{Bagging} é um algoritmo \cite{bagging:1996} de combinação de classificadores que foi desenvolvido com o intuito de melhorar a acurácia na tarefa de classificação. O principal conceito deste algoritmo é o \textit{bootstrap aggregation}, na qual o conjunto de treinamento para cada classificador é construído a partir de uma amostra escolhida aleatoriamente do conjunto de treinamento. Os classificadores são então combinados e ao se apresentar uma nova instância, cada classificador fornece como resultado a classe na qual essa nova instância pertence. Normalmente, a classe que obteve mais votos, é dita como sendo a classe desta instância. 
 
 
 \begin{algorithm}
 \caption{Bagging}
 \label{alg:bagging}
 \begin{algorithmic}
-\FORALL {instância $e_i$ em $T$}
-		\STATE Aplique o KNN sobre $e_i$ utilizando $T$ como treinamento
-		\IF {$e_i$ foi classificado erroneamente}
-			\STATE salve $e_i$ em $L$
-		\ENDIF
-	\ENDFOR
-	\STATE Remova de $T$ os elementos de $L$
-	\RETURN $T$
+\STATE Dado o conjunto de treinamento $T$
+\FORALL {t = 1, ..., n}
+		\STATE Para cada amostra $S$ do conjunto de treinamento $T$ selecione \textit{m} exemplos aleatórios com reposição
+		\STATE Considere $ht$ o resultado do classificador $t$ para o conjunto de treinamento $S$
+\ENDFOR
+\STATE $Resultado \gets$ a maioria dos votos de $(h1(x), ..., hT(x))$
+\RETURN $Resultado$
 \end{algorithmic}
 \end{algorithm}
+
+Assim, como pode ser observado melhor acima, para cada \textit{n} interações uma réplica do conjunto de treinamento é criada. E um classificador é treinado com essa réplica, este processo continua até uma quantidade de interações desejada. Após uma quantidade de interações previamente escolhida, uma combinação de classificadores é gerada e a maioria dos votos desses classificadores determina a classe de uma nova instância.
+
+\section{Boosting}
+ \textit{Boosting} é um método geral para melhorar a precisão de uma classificação. O objetivo deste método é produzir um classificador forte a partir de um conjunto de vários classificadores fracos. Um classificador é dito fraco quando este tem uma taxa de acerto boa, mas somente para uma porção da base de dados. Por isso a ideia de combinar vários classificadores ditos fracos para formar uma combinação de classificadores que tem uma precisão melhor. Um analogia favorável ao entendimento é que um classificador fraco é um bom classificador para um determinado domínio, e a junção de vários classificadores fracos forma uma combinação de classificadores forte.
+ 
+ %ALTERAR ESTE ALGORITMO PARA BOOSTING 
+ \begin{algorithm}
+\caption{Boosting}
+\label{alg:boosting}
+\begin{algorithmic}
+\STATE Dado o conjunto de treinamento $T$
+\FORALL {t = 1, ..., n}
+		\STATE Para cada amostra $S$ do conjunto de treinamento $T$ selecione \textit{m} exemplos aleatórios com reposição
+		\STATE Considere $ht$ o resultado do classificador $t$ para o conjunto de treinamento $S$
+\ENDFOR
+\STATE $Resultado \gets$ a maioria dos votos de $(h1(x), ..., hT(x))$
+\RETURN $Resultado$
+\end{algorithmic}
+\end{algorithm}
+
+O método \textit{boosting} treina iterativamente cada classificador atribuindo a cada instância um peso após este treinamento. Os pesos de cada instância são acrescidos quando esta instância é classificada incorretamente e analogamente este peso é decrementado quando classificado corretamente. Isto faz com que cada classificador foque nos exemplos mais difíceis. Depois que a cominação de classificadores for gerada, uma regra de escolha é usada,  maioria dos votos por exemplo. 
+
+\subsection{AdaBoost}
+Um dos mais famosos algoritmos da família \textit{boosting} é o \textit{AdaBoost}, este algoritmo foi a primeira abordagem prática do \textit{Boosting} e hoje é apontando como um dos top dez dos algoritmos de aprendizagem de máquina[94 review] . Este algoritmo utiliza todo o conjunto de dados para treinar cada classificador, mas a cada iteração é dado um foco maior a instâncias difíceis de classificar. O objetivo é classificar corretamente na próxima iteração uma instância que foi classificada de forma errada na iteração atual. Com isso, é dado um foco maior em instâncias que são difíceis de se classificar.
+Depois de cada iteração, os pesos das instâncias que foram classificadas de forma errada são aumentando; e em contraste, os pesos das instâncias que foram classificadas corretamente são decrementados. Além disso outro peso é atribuído a cada classificador individual, dependendo da sua taxa de acerto na fase de treinamento.
+Finalmente, quando uma nova instância é apresentada, cada classificador dá um voto, e a classe selecionada foi a que obteve a maioria dos votos. Lembrando que os classificadores possuem pesos diferentes nas votações. O algoritmo pode ser conferido abaixo.
+
+% TODO - ver outro código ou traduzir e rever
+\begin{algorithm}[h]
+\caption{AdaBoost}
+\label{alg:1}
+\begin{algorithmic}[1]
+\STATE \textbf{ENTRADA:}
+\item Conjunto de Treinamento: $\mathcal{D} = \{(x_i, y_i), i=1, \ldots, N
+\}$, onde $x_i \in \mathbf{R}^d$ e $y_i \in \{-1, +1\}$.
+\item O número de amostras em cada iteração: $m$
+\item Classificador Fraco: $\mathcal{L}$ that automatically learns a binary classifier $h(x): \mathbf{R}^d \mapsto \{-1, +1\}$
+de um conjunto de treinamento.
+\item O número de iterações: $T$
+\STATE \textbf{SAÍDA:}
+\item O Classificador Final: $H(x) = sign\left(\sum_{t=1}^T \alpha_t h_t(x) \right)$
+
+\STATE \textbf{Algorithm}
+
+\STATE Inicialize a distribuição $D_0(i) = 1/N, i=1, \ldots, N$
+
+\FOR{$t = 1$ até $T$}
+
+\STATE Sample $m$ examples with replacement from $\mathcal{D}$
+de acordo com a distribuição $D_{t-1}(i)$.
+
+\STATE Treine o classificador $h_t(x)$ usando os exemplos da amostra
+
+\STATE Compute a taxa de erro $\varepsilon_t = \sum_{i=1}^N
+D_{t-1}(i) I(h_t(x_i) \neq y_i)$ onde $I(z)$ outputs $1$ quando $z$
+é verdadeiro e zero caso contrário.
+
+\STATE Saia do loop se $\varepsilon > 0.5$.
+
+\STATE Compute o peso como $\alpha_t$ em
+\[\alpha_t = \frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) \]
+
+\STATE Atualize a distribuição em as
+\[ D_t(i) = \frac{1}{Z_t} D_{t-1}(i)\exp(\alpha_tI(y_i \neq h_t(x_i))\]
+where $Z_t = \sum_{i=1}^N D_{t-1}(i)\exp(\alpha_tI(y_i \neq
+h_t(x_i))$.
+
+\ENDFOR
+
+\STATE Construct the final classifier $H(x) = sign(\sum_{t=1}^T
+\alpha_t h_t(x))$.
+
+\end{algorithmic}
+\end{algorithm}
+
+% FIM DO TODO
+
+
+\section{ICS-Bagging}
+Este algoritmo é o ponto central e objetivo de estudo deste trabalho. Por isso um maior grau de detalhamento se faz necessário. 
