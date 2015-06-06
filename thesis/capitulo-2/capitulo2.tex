@@ -98,4 +98,44 @@ h_t(x_i))$.
 
 
 \section{ICS-Bagging}
-Este algoritmo é o ponto central e objetivo de estudo deste trabalho. Por isso um maior grau de detalhamento se faz necessário. 
+O algoritmo ICS-Bagging,  acrônimo de \textit{Iteractive Classifier Selection Baggin},  é o ponto central e objetivo de estudo deste trabalho. Por isso um maior grau de detalhamento se faz necessário. O ICS-Bagging é baseado em uma inicialização iterativa para formar o conjunto de classificadores. Cada iteração gera um conjunto de classificadores e seleciona o melhor classificador deste conjunto. A amostragem de inicialização usa uma probabilidade de amostragem a partir de cada classe, sendo esta probabilidade derivada a partir da taxa de erro da classe. O algoritmo abaixo descreve o funcionamento do ICS-Bagging.
+\begin{algorithm}[H]
+%\begin{algorithm*}
+%\begin{figure*}
+\caption{ICS-Bagging}
+\begin{algorithmic}[1]
+	\REQUIRE $\mathcal{T}$: conjunto de treinamento.
+	\REQUIRE $\mathcal{V}$: conjunto de validação.
+    \REQUIRE $N$: tamanho da pool.
+    \REQUIRE $K$: número de classificadores a serem adicionados a cada iteração.
+    \REQUIRE $\alpha$: parâmetro da função de fitness.
+    \REQUIRE \textit{diversity}: métrica de diversidade a ser usada.
+    \STATE $\mathcal{P} \gets$ lista vazia de classificadores.
+	\STATE Gera o classificador usando uma inicialização aleatória das amostras adicionando-as em $\mathcal{P}$.
+    \WHILE {$|\mathcal{P}| < N$}
+        \STATE \textit{pesos} $\gets$ $Probabilidade_{classe_i} = 1 - \dfrac{FN_{classe_i}}{\sum\nolimits_{classe_j \in classes} FN_{classe_j}}$.
+        \STATE $C$ = $K$ classificadores usando \textit{pesos} para executar a inicialização das amostras.
+        \FORALL {classificador $c_i \in C$}
+            \STATE Adicione $c_i$ em $\mathcal{P}$.
+            \STATE \textit{acc} $\gets AUC(\mathcal{P})$
+            \STATE \textit{div} $\gets \text{\textit{diversity}}(\mathcal{P})$
+            \STATE $fitness(c_i) \gets \alpha \times acc + (1 - \alpha) \times div$
+            \STATE Remova $c_i$ de $\mathcal{P}$.
+		\ENDFOR
+        \STATE $melhor \gets argmax(fitness, C)$
+        \STATE Adicione $C[melhor]$ em $\mathcal{P}$
+        \STATE Atualize \textit{pesos}
+	\ENDWHILE
+	\RETURN $\mathcal{P}$
+\end{algorithmic}
+\label{alg:abag}
+\end{algorithm}
+
+Abaixo, uma explicação formulada de maneira textualmente mais livre:
+\par \textbf{Pré-processamento: } Antes de gerar os classificadores, alguma técnica de pré-processamento pode ser aplicada ao conjunto de treinamento. Este pré-processamento consiste em remover ruídos, dados redundantes ou gerar novos dados. No entanto, o algoritmo ICS-Bagging não tem essa etapa.
+
+\textbf{Gerar K classificadores: } Este passo gera K classificadores usando uma amostra de inicialização (com reposição). No primeiro passo os pesos são os mesmos para todas as classes; depois do primeiro passo os peses são atualizados para priorizar a classe que possui maior taxa de erro. A motivação de se usar pesos para guiar o processo de inicialização é focar nos exemplos que são mais difíceis de serem classificados. E a motivação de se utilizar K \textgreater 1 classificadores para que se aumente a região de busca, aumentando a probabilidade de se achar um classificador que consideravelmente aumente a diversidade e a acurácia na classificação.
+\par isto é um paragrafo de teste
+\textbf{Adicionar o melhor classificador na \textit{pool}} Para cada um dos K classificadores gerados os seguintes passos são executados para achar o melhor classificador
+
+
