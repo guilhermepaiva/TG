@@ -132,10 +132,54 @@ O algoritmo ICS-Bagging,  acrônimo de \textit{Iteractive Classifier Selection Ba
 \end{algorithm}
 
 Abaixo, uma explicação formulada de maneira textualmente mais livre:
+
 \par \textbf{Pré-processamento: } Antes de gerar os classificadores, alguma técnica de pré-processamento pode ser aplicada ao conjunto de treinamento. Este pré-processamento consiste em remover ruídos, dados redundantes ou gerar novos dados. No entanto, o algoritmo ICS-Bagging não tem essa etapa.
 
 \textbf{Gerar K classificadores: } Este passo gera K classificadores usando uma amostra de inicialização (com reposição). No primeiro passo os pesos são os mesmos para todas as classes; depois do primeiro passo os peses são atualizados para priorizar a classe que possui maior taxa de erro. A motivação de se usar pesos para guiar o processo de inicialização é focar nos exemplos que são mais difíceis de serem classificados. E a motivação de se utilizar K \textgreater 1 classificadores para que se aumente a região de busca, aumentando a probabilidade de se achar um classificador que consideravelmente aumente a diversidade e a acurácia na classificação.
-\par isto é um paragrafo de teste
-\textbf{Adicionar o melhor classificador na \textit{pool}} Para cada um dos K classificadores gerados os seguintes passos são executados para achar o melhor classificador
 
+\par \textbf{Adicionar o melhor classificador na \textit{pool}:} Para cada um dos K classificadores gerados os seguintes passos são executados para achar o melhor classificador. $C$ é a lista dos K classificadores gerados, $\mathcal{V}$ é o conjunto de validação (neste trabalho foi utilizado o conjunto de treinamento como sendo o conjunto de validação) e $\mathcal{P}$ é a \textit{pool} atual de classificadores. 
+
+\par Para todos os classificadores em $C$, o classificador é adicionado à \textit{pool} (Linha 4), e então o \textit{fitness} da \textit{pool} (Linha 5) é calculado pelo fórmula abaixo:
+
+\begin{equation}
+\text{\textit{fitness}} = \alpha \times \text{\textit{ACC}} + (1 - \alpha) \times \text{\textit{DIV}}
+\label{eq:fitness}
+ \end{equation}
+ 
+\noindent onde \textit{ACC} é a acurácia de classificação da \textit{pool}, \textit{DIV} é a métrica de diversidade, e $\alpha$ é o parâmetro que regula a proporção que a diversidade ou a acurácia da classificação possui na função de \textit{fitness}, este valor varia entre 0.01 e 0.99.
+
+Se a \textit{pool}  alcança o maior \textit{fitness} com esse classificador, então o índice desse classificador é salvo em \textit{melhor}$_{index}$ (Linha 6 - 9). O classificador é removido da \textit{pool} (Linha 10) e o processo começa novamente utilizando outro classificador até que o melhor classificador seja retornado (Linha 12).
+
+Para a classificação de uma amostra de teste, qualquer regra de combinação pode ser utilizada. Para este trabalho foi utilizado a regra da maioria dos votos \cite{kuncheva:2004} para combinar as saídas dos classificadores na \textit{pool}.
+
+Quaisquer métricas de classificação ou de diversidade podem ser usadas na Equação \ref{eq:fitness}, mas ambas precisam ser normalizadas (entre 0 1 ). Neste trabalho foi utilizado a área sobre a curva ROC - AUC, e como medida de diversidade foi utilizada a Entropia $E$ \cite{diversity:2003}, a métrica tal e a métrica tal... %TODO colocar quais métricas serão usadas
+
+%The Entropy Measure $E$ is a non-pairwise diversity measure that has it's highest value when half classifiers correctly classify a pattern and the other half doesn't. If all classifiers have the same agree on a classification, the %ensemble is not considered diverse. The Entropy Measure $E$ is described as
+
+    \begin{equation}
+    \text{\textit{E}} = \dfrac{1}{N} \sum_{j=1}^{N} \dfrac{1}{(L - \lceil\frac{L}{2}\rceil)} \text{\textit{min}}\{l(z_j), L - l(z_j)\}
+    \label{eq:entropy}
+    \end{equation}
+
+%The motivation for adding only one of the $K$ generated classifiers is because the accuracy of each class might change when the best classifier is inserted in the pool, which means, the pool now has different samples to prioritize in %order to increase classification accuracy and diversity.
+
+% TODO colocar algum tipo de motivação de se variar o K
+
+
+\textbf{$|$pool$|$ = N}: Se a \textit{pool} já contém o número desejado de classificadores, então a \textit{pool} é retornada.I
+
+\textbf{Atualiza o peso de cada classe}: Como a precisão de cada classe pode mudar depois que um novo classificador for inserido na \text{pool}, os pesos precisam ser atualizados utilizando a  Equação \ref{eq:weight},
+
+    \begin{equation}
+    peso_{classe} =  1.0 - \dfrac{acuracia_{classe}}{\sum\nolimits_{c \in classes} acuracia_{c}}
+    \label{eq:weight}
+    \end{equation}
+
+\noindent onde $peso_{classe}$ é o peso da classe, $acurácia_{classe}$ é a taxa de acerto da classe, e $\sum\nolimits_{c \in classes} acurácia_{c}$ é a soma da taxa de acerto de todas as classes.
+
+E como foi mencionado anteriormente, a motivação de se atualizar os pesos é aumentar a probabilidade de treinar um novo classificador $K$ com amostras da classe com uma baixa taxa de acerto na \textit{pool}.
+%\item 
+
+\textbf{Retorne a \textit{pool}}: A \textit{pool} final de classificadores é retornada.
+%\end{enumerate}
 
