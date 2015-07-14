@@ -1,0 +1,65 @@
+\chapter{Introdução}
+
+Neste capítulo será dada uma introdução à classificação em si, à combinação de classificadores bem como uma breve análise dos algoritmos Bagging, Boosting e ICS-Bagging. Para que este assunto seja melhor compreendido, será apresentado o contexto histórico, a motivação do uso de combinação de classificadores e os desafios atuais. Após a seção de motivação e contextualização seguirá um detalhamento deste trabalho, abordando objetivo e estrutura do mesmo.
+
+\section{Motivação e Contextualização}
+
+\subsection{Histórico}
+
+Os primeiros trabalhos de aprendizagem de máquina surgiram há mais de seis décadas. E de uma maneira mais ampla, esses primeiros trabalhos consistiam em dar ao computador problemas que ele pudesse resolver de forma mais genérica. Junto com esses primeiros estudos, diversos outros surgiram na qual a aprendizagem de máquina atua. 
+
+Ao dividir os problemas de aprendizagem de máquina, de uma forma até mesmo didática, pode-se segregar em: agrupamento, discriminação e generalização. O primeiro consiste em agrupar dados de acordo com suas características, de forma que seja possível extrair informação útil desses agrupamentos. No problema da discriminação, que basicamente é achar uma forma de reconhecer um conceito, dado um conjunto de conceitos exemplos. No último, o da generalização, reduz-se uma regra, tornando-a mais abrangente e menos custosa. 
+
+Reconhecimento de padrões foca principalmente no problema anteriormente mencionado da discriminação. E seu objetivo é classificar padrões, discriminando-os dentre duas ou mais classes. A base de um sistema discriminante é um classificador, que como o próprio nome sugere, classifica uma nova instância como pertencente a uma determinada classe de interesse. E essa eficácia pode ser medida pela taxa de acerto, pela variância, e pela eficiência em termos de custo computacional.
+
+Um exemplo bastante conhecido e simples é o \textit{K-Nearest Neighbor}, KNN \cite{knnrule:1969}. Este algoritmo consiste basicamente em ado um padrão $x$ a ser classificado e um conjunto de padrões conhecidos $T$, obter as classes dos $K$ elementos de $T$ mais próximos de $x$. A classe que obtiver maior ocorrência, ou peso, será a classe de $x$. A descrição do algoritmo pode ser vista em Algorithm \ref{alg:knn}.
+
+\begin{algorithm}[H]
+\caption{KNN}
+\label{alg:knn}
+\begin{algorithmic}[1]
+\REQUIRE {$K$: um número}
+\REQUIRE {$T$: conjunto de treinamento}
+\REQUIRE {$x$: elemento para ser classificado}
+\REQUIRE {$L$: uma lista}
+\FORALL {$t_i$ $\in$ $T$}
+\STATE  $d_i$ = $distance(t_i, x)$
+\STATE  adicione $(d_i, Classe(t_i))$ em $L$
+\ENDFOR
+\STATE $Ordene(L)$ de acordo com as distâncias
+\STATE obtenha os $K$ primeiros elementos de $L$
+\RETURN a classe de maior ocorrência, ou peso, entre os $K$
+\end{algorithmic}
+\end{algorithm}
+
+No entanto, como podemos ver com o exemplo acima, a classificação é dada por um único classificador. Como consequência natural, a evolução nesta área seu pautou em combinar vários classificadores para melhorar os resultados. Surgiram então diversos algoritmos que combinam classificadores, dentre eles o AdaBoost e Bagging, que são muito difundidos e  servem de base para uma série de algoritmos de combinação de classificadores.  Vale ressaltar que existem diversas outras formas de se combinar classificadores na literatura \cite{kuncheva:2004} que não se limita apenas a evolução dos algoritmos mencionados.
+
+
+\subsection{Combinação de Classificadores}
+
+Classificar algo sempre fez parte e é algo que ocorre várias vezes com os seres humanos. Um médico ao diagnosticar um paciente está classificando o mesmo como portador de uma determinada enfermidade ou não, um sommelier ao dar sua opinião sobre um vinho pratica da mesma tarefa. Como podemos ver, a tarefa de classificar algo é de suma importância e nada mais natural que essa tarefa fosse feita por uma máquina. Inicialmente, a abordagem era criar um classificador que pudesse, dado uma instância desconhecida, dizer a qual classe esta instância pertence. No entanto, novamente fazendo analogia ao comportamento humano, ao tomar uma decisão nada mais natural que uma pessoa consulte a opinião de outras pessoas. E isto é a base para se combinar classificadores, a decisão final não é baseada na resposta de um único classificador e sim nas respostas de vários. 
+
+Na literatura temos vários algoritmos de combinação de classificadores, os primordiais foram: Bagging e Boosting. O algoritmo Bagging introduziu o conceito de bootstrap agreggating, na qual cada classificador é treinado com uma amostra da base de dados, cada classificador é colocado em um conjunto de classificadores e quando uma instância desconhecida é colocada, pelo voto da maioria dos classificadores ou por outro tipo de votação, a instância é classificada como pertencente a uma determinada classe. Já os algoritmos da família Boosting, que tem como algoritmo mais conhecido o AdaBoost, partem de ideia de que se uma instância é classificada de forma errada, esta instância deve ter mais importância e como consequência se uma instância é classificada de forma correta, sua importância é diminuída. A motivação deste algoritmo é termos vários classificadores ditos fracos, mas que são especialistas em um subdomínio do problema.
+
+A partir desses algoritmos, que poderíamos chamar de canônicos, vários outros surgiram. Um em especial é o algoritmo ICS-Bagging. Que de forma mais ampla, combina os classificadores amparado por uma função de \textit{fitness}, de forma que um classificador só é adicionado na \textit{pool} de classificadores se o fato deste classificador ser adicionado na \textit{pool} de classificadores aumenta o \textit{fitness} da \textit{pool}. 
+
+\subsection{Métricas de Diversidade}
+
+Combinação de classificadores é uma área de pesquisa estabelecida e os algoritmos para gerar um conjunto de classificadores baseados em Bagging e Boosting têm mostrado resultados de sucesso. A chave para o sucesso destes algoritmos é que, intuitivamente, estes algoritmos constroem um conjunto de classificadores \textit{diversos}. Por esse motivo diversidade é uma característica importante quando se combina classificadores. No entanto, não existe uma definição estrita sobre o que é percebido intuitivamente como diversidade, dependência, ortogonalidade ou complementariadade dos classificadores. 
+
+Várias métricas que correlacionam as saídas dos classificadores são derivadas de estudos vindos da estatística. Existem métodos, fórmulas e ideias que tem como objetivo quantificar a diversidade de um conjunto de classificadores. Para este trabalho, foi utilizada na análise dos experimentos as métricas: Entropia, Kohavi Wolpert Variance e Q Statistics. 
+
+\subsection{Bases Balanceadas e Bases Desbalanceadas}
+
+A distribuição de uma classe, ou seja, a proporção de instâncias que pertence a cada classe do conjunto de dados, desempenha um importante papel na combinação de classificadores. Uma base de dados é dita desbalanceada quando o número de instâncias de uma classe 	é muito maior que o da outra classe. De forma intuitiva, uma base balanceada mantém um proporção mais ou menos igual entre as classes. E este ponto é de suma importância quando se trata de combinação de classificadores pois a abordagem dos algoritmos e as métricas utilizadas diferem quando uma base é desbalanceado ou balanceada. 
+
+
+\section{Objetivo}
+
+O objetivo deste trabalho é analisar os parâmetros da função de \textit{fitness} bem como diversas métricas de diversidade para o algoritmo ICS-Bagging e avaliar seu desempenho. A medida de desempenho será a área sobre a curva ROC de 5-cross-fold validation de cada base de dados. As bases de dados a serem analisadas são: Glass1, Pima, Iris0, Yeast1, Vehicle2, Vehicle3, Ecoli1, Ecoli2,  Glass6, Yeast3, Ecoli3, Vowel0, Glass4, Ecoli4 e Page-blocks-1-3 . Todas essas bases são balanceadas e foram obtidas no repositório Keel.
+No final do trabalho será possível identificar qual métrica obteve o melhor desempenho e qual a melhor proporção da medida de diversidade na função de \textit{fitness} do algoritmo ICS-Bagging. Depois de obtida a melhor proporção da medida de diversidade, o algoritmo será analisado utilizando-se outras métricas de diversidade.
+
+\section{Estrutura do Trabalho} 
+
+O restante deste trabalho possui um capítulo com detalhes sobre diferentes algoritmos de combinação de classificadores bem como uma abordagem mais detalhada do algoritmo ICS-Bagging. Durante o capítulo, será abordado o conceito de métrica de diversidade, bem como várias métricas de diversidade que serão analisadas neste trabalho. 
+Logo após, segue um capítulo mostrando os resultados das analises das diversas métricas de diversidade bem como sua proporção na função de \textit{fitness} bem como uma análise comparativa com algoritmos clássicos. Por fim, será concluído como se dá o comportamento dessas métricas de diversidade e a importância das mesmas na função de fitness.

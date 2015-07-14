@@ -2,11 +2,21 @@
 \BOOKMARK [1][-]{section.1.1}{Motiva\347\343o e Contextualiza\347\343o}{chapter.1}% 2
 \BOOKMARK [2][-]{subsection.1.1.1}{Hist\363rico}{section.1.1}% 3
 \BOOKMARK [2][-]{subsection.1.1.2}{Combina\347\343o de Classificadores}{section.1.1}% 4
-\BOOKMARK [2][-]{subsection.1.1.3}{Bases Balanceadas e Bases Desbalanceadas}{section.1.1}% 5
-\BOOKMARK [1][-]{section.1.2}{Objetivo}{chapter.1}% 6
-\BOOKMARK [1][-]{section.1.3}{Estrutura do Trabalho}{chapter.1}% 7
-\BOOKMARK [0][-]{chapter.2}{Combina\347\343o de Classificadores}{}% 8
-\BOOKMARK [1][-]{section.2.1}{Bagging}{chapter.2}% 9
-\BOOKMARK [1][-]{section.2.2}{Boosting}{chapter.2}% 10
-\BOOKMARK [2][-]{subsection.2.2.1}{AdaBoost}{section.2.2}% 11
-\BOOKMARK [1][-]{section.2.3}{ICS-Bagging}{chapter.2}% 12
+\BOOKMARK [2][-]{subsection.1.1.3}{M\351tricas de Diversidade}{section.1.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.4}{Bases Balanceadas e Bases Desbalanceadas}{section.1.1}% 6
+\BOOKMARK [1][-]{section.1.2}{Objetivo}{chapter.1}% 7
+\BOOKMARK [1][-]{section.1.3}{Estrutura do Trabalho}{chapter.1}% 8
+\BOOKMARK [0][-]{chapter.2}{Combina\347\343o de Classificadores}{}% 9
+\BOOKMARK [1][-]{section.2.1}{Selecionar Classificadores}{chapter.2}% 10
+\BOOKMARK [2][-]{subsection.2.1.1}{Regras de Combina\347\343o}{section.2.1}% 11
+\BOOKMARK [2][-]{subsection.2.1.2}{Diversidade}{section.2.1}% 12
+\BOOKMARK [2][-]{subsection.2.1.3}{Pontos Fracos}{section.2.1}% 13
+\BOOKMARK [1][-]{section.2.2}{Bagging}{chapter.2}% 14
+\BOOKMARK [1][-]{section.2.3}{Boosting}{chapter.2}% 15
+\BOOKMARK [2][-]{subsection.2.3.1}{AdaBoost}{section.2.3}% 16
+\BOOKMARK [1][-]{section.2.4}{ICS-Bagging}{chapter.2}% 17
+\BOOKMARK [0][-]{chapter.3}{An\341lise dos Experimentos}{}% 18
+\BOOKMARK [1][-]{section.3.1}{Primeira Se\347\343o}{chapter.3}% 19
+\BOOKMARK [0][-]{chapter.4}{An\341lise das M\351tricas de Diversidade}{}% 20
+\BOOKMARK [1][-]{section.4.1}{This is a section}{chapter.4}% 21
+\BOOKMARK [0][-]{chapter.5}{Conclus\343o}{}% 22
