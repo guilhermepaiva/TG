@@ -1,6 +1,16 @@
 \select@language {brazil}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Bagging}}{8}{figure.2.1}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Random Forest}}{9}{figure.2.2}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Arquitetura do ICS-Bagging. Onde L \'e o conjunto final de classificadores.}}{15}{figure.2.3}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces AUC x Alfa}}{20}{figure.3.1}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces AUC x K}}{21}{figure.3.2}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces AUC x Alfa}}{22}{figure.3.3}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces AUC x K}}{23}{figure.3.4}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces AUC x Alfa}}{24}{figure.3.5}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces AUC x Alfa}}{25}{figure.3.6}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces AUC x Alfa}}{27}{figure.3.7}
 \addvspace {10\p@ }
 \addvspace {10\p@ }

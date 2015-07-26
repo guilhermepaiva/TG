@@ -30,7 +30,11 @@ O sucesso de um sistema que combina classificadores reside na diversidade dos se
 A contrapartida do aumento da taxa de acerto ao se combinar classificadores ocorre um principalmente três pontos: é necessário mais armazenamento, mais capacidade computacional e a complexidade de entendimento aumenta. O primeiro ponto fraco, necessidade de mais armazenamento, é consequência direta de que vários classificadores e não apenas um precisa ser armazenado após a fase de treinamento. O segundo problema decorre naturalmente do aumento da capacidade computacional requerida dado que vários classificadores precisam ser processados e não apenas um. O último, complexidade no entendimento, envolve uma maior dificuldade para se compreender de forma intuitiva ou até mesmo trivial o que realmente incorpora melhores resultados nos algoritmos.
 
 \section{Bagging}
-\textit{Bagging} é um algoritmo \cite{bagging:1996} de combinação de classificadores que foi desenvolvido com o intuito de melhorar a acurácia na tarefa de classificação. O principal conceito deste algoritmo é o \textit{bootstrap aggregation}, na qual o conjunto de treinamento para cada classificador é construído a partir de uma amostra escolhida aleatoriamente do conjunto de treinamento. Os classificadores são então combinados e ao se apresentar uma nova instância, cada classificador fornece como resultado a classe na qual essa nova instância pertence. Normalmente, a classe que obteve mais votos, é dita como sendo a classe desta instância. 
+
+\subsection{Origem do Algoritmo Bagging}
+
+\textit{Bagging} é um algoritmo \cite{bagging:1996} de combinação de classificadores que foi desenvolvido com o intuito de melhorar a acurácia na tarefa de classificação. O principal conceito deste algoritmo é o \textit{Bootstrap AGGregatING}, na qual o conjunto de treinamento para cada classificador é construído a partir de uma amostra escolhida aleatoriamente do conjunto de treinamento. Os classificadores são então combinados e ao se apresentar uma nova instância, cada classificador fornece como resultado a classe na qual essa nova instância pertence. Normalmente, a classe que obteve mais votos, é dita como sendo a classe desta instância. 
+A diversidade necessária para fazer com que o conjunto funcione é obtida pelo fato de se utilizar diferentes conjuntos de treinamento. Idealmente, os conjuntos de treinamento devem ser criados randomicamente do conjunto de treinamento. E abaixo o algoritmo pode ser entendido, de forma que pode ser notado que este é um algoritmo paralelo nas fases de treinamento e operacional. 
 
 
 \begin{algorithm}
@@ -47,89 +51,167 @@ A contrapartida do aumento da taxa de acerto ao se combinar classificadores ocor
 \end{algorithmic}
 \end{algorithm}
 
-Assim, como pode ser observado melhor acima, para cada \textit{n} interações uma réplica do conjunto de treinamento é criada. E um classificador é treinado com essa réplica, este processo continua até uma quantidade de interações desejada. Após uma quantidade de interações previamente escolhida, uma combinação de classificadores é gerada e a maioria dos votos desses classificadores determina a classe de uma nova instância.
+Assim, como pode ser observado melhor acima, para cada \textit{n} interações uma réplica do conjunto de treinamento é criada. E um classificador é treinado com essa réplica, este processo continua até uma quantidade de interações desejada. Após uma quantidade de interações previamente escolhida, uma combinação de classificadores é gerada e a maioria dos votos desses classificadores determina a classe de uma nova instância. A figura \ref{fig:bagging} ilustra o funcionamento do algoritmo.
 
-\section{Boosting}
- \textit{Boosting} é um método geral para melhorar a precisão de uma classificação. O objetivo deste método é produzir um classificador forte a partir de um conjunto de vários classificadores fracos. Um classificador é dito fraco quando este tem uma taxa de acerto boa, mas somente para uma porção da base de dados. Por isso a ideia de combinar vários classificadores ditos fracos para formar uma combinação de classificadores que tem uma precisão melhor. Um analogia favorável ao entendimento é que um classificador fraco é um bom classificador para um determinado domínio, e a junção de vários classificadores fracos forma uma combinação de classificadores forte.
- 
- %ALTERAR ESTE ALGORITMO PARA BOOSTING 
- \begin{algorithm}
-\caption{Boosting}
-\label{alg:boosting}
-\begin{algorithmic}
-\STATE Dado o conjunto de treinamento $T$
-\FORALL {t = 1, ..., n}
-		\STATE Para cada amostra $S$ do conjunto de treinamento $T$ selecione \textit{m} exemplos aleatórios com reposição
-		\STATE Considere $ht$ o resultado do classificador $t$ para o conjunto de treinamento $S$
-\ENDFOR
-\STATE $Resultado \gets$ a maioria dos votos de $(h1(x), ..., hT(x))$
-\RETURN $Resultado$
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.45]{imagens/bagging.png}
+\caption{Bagging}
+\label{fig:bagging}
+\end{figure}
+
+\subsection{A Razão do Bagging Funcionar}
+
+Se as saídas dos classificadores fossem independentes e os classificadores tivessem a mesma acurácia \textit{p}, então a maioria do votos simples dos classificadores já garante um ganho com relação a um único classificador. O algoritmo Bagging tem como objetivo treinar classificadores independentes utilizando réplicas de amostras da base de treinamento. Estas réplicas são pseudo-independentes pelo fato de terem sido obtidas do mesmo conjunto de treinamento. No entanto, este fato não anula o fato das respostas dos classificadores individuais serem independentes. 
+
+\subsection{Variantes do Algoritmo Bagging}
+
+As seções abaixo mostra algumas variantes do algoritmo têxtil{bagging}, bem como o seu funcionamento e definição.
+
+\subsubsection{Random Forest}
+
+Breiman propôs uma variante do algoritmo têxtil{bagging} [214] que o chamou de \textit{random forest}. Este algoritmo é uma classe geral para os métodos de combinação de classificadores que utilizam uma árvore de decisão como classificador base. Para ser rotulado como um "\textit{random forest}" um conjunto de árvores de decisão deve ser construído gerando vetores aleatórios independentes e distribuídos de maneira idêntica, e utilizar cada vetor para crescer a árvore de decisão. Uma definição formal pode ser obtida abaixo.
+
+\textbf{Definição: } \textit{Random Forest} é um classificador consistindo de uma coleção de classificadores do tipo árvore de decisão. Cada árvore de decisão cresce respeitando um vetor aleatório onde cada elemento deste vetor é independente e identicamente distribuído. Cada árvore de decisão provê um único voto dado um entrada \textbf{x} e o resultado é a saída \textbf{y} que é a maioria simples dos votos. A figura \ref{fig:randomforest} ilustra a definição.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.80]{imagens/randomforest.png}
+\caption{Random Forest}
+\label{fig:randomforest}
+\end{figure}
+
+\subsubsection{Pasting Small Votes}
+
+Bases de dados grandes são mais comuns atualmente do que no início do desenvolvimento dos primeiros algoritmos de combinação de classificadores. E a disponibilidade de aumento de capacidade computacional permitiu com que a manipulação dessa massa maior de dados disponível fosse possível. Breiam [215] então sugeriu o que ficou conhecido como \textit{small votes}, na qual classificadores individuais são treinados com pequenos subconjuntos do conjunto de treinamento. Os conjuntos de treinamento são obtidos de forma aleatória do conjunto original. Caso esse conjunto seja obtido de forma similar ao \textit{bagging} então este é denominado \textit{RVotes}, e caso seja baseado em importância, é denominado de \textit{IVotes}.\textit{Pasting Small Votes} é adequado para aprendizado \textit{on-line}, de forma que o conjunto de classificadores pode ser atualizado adicionando um novo classificador cada vez que uma nova quantidade de dados do conjunto de treinamento é acumulada. \textit{Pasting RVotes} possui o como ponto positivo o fato de ser mais simples, no entendo perde em acurácia se comparado com \textit{Pasting IVotes} [215, 216].
+
+\begin{algorithm}[h]
+\caption{IVotes}
+\label{alg:ivotes}
+\begin{algorithmic}[1]
+\STATE \textbf{ENTRADA:} Conjunto de Treinamento: $S$, Número de Iterações: $T$, Tamanho do Bootstrap: $n$,  Classificador fraco: $I$.
+\STATE {\textbf{SAÍDA:} O Classificador Final: $H(x) = sign\left(\sum_{t=1}^T h_t(x) \right)$ onde $h_t(x))$ onde $h_t(x)  \in \{-1, +1\}$.}
+\item $e_n \gets$ 0.5
+\item \textbf{Repita}
+\item  {$e_o \gets e_n$}
+\item  {$S_t \gets \emptyset$}
+\WHILE{\textit{size} $S_t$ < \textit{n}} 
+\STATE{$x \gets InstanciaAleatoria(S)$} 
+\IF{$x$ for classificado de forma incorreta por um classificador fora do conjunto} 
+\STATE{$S_t \gets S_t \cup \{x\}$} 
+\ELSE 
+\STATE{$S_t \gets S_t \cup \{x\}$ com probabilidade $(\frac{e_o}{1- e_o})$} 
+\ENDIF
+\ENDWHILE
+\item $h_t \gets I(S_t)$
+\item $e_n \gets$ erro do classificador fora do conjunto
+\item \textbf{Até} $e_n < e_o$
+
 \end{algorithmic}
 \end{algorithm}
 
+\subsubsection{Random Subspace}
+
+O método \textit{Random Subspace} \ref{tk:1998} consiste em utilizar vários classificadores cada um operando em um subespaço do espaço de características. De forma mais específica, o classificador consiste em se construir sistematicamente múltiplas árvores selecionando pseudorandomicamente subconjuntos dos componentes do vetor de características. Dessa formas, as árvores são construídas por esses subespaços escolhidos randomicamente.
+Este método, como já detalhado anteriormente, utiliza um subconjunto de características selecionadas aleatoriamente e atribui a um determinado algoritmo de aprendizagem. Dessa forma, é obtido um subespaço aleatório do espaço de características original, construindo assim os classificadores dentro desse espaço reduzido. 
+A forma mais comum utilizada para se obter o resultado é por meio de um voto de cada classificador utilizando-se pesos. Isso se justifica por ter sido mostrado que este método é eficiente para classificadores que possuem um curva de aprendizado decrescente construída sobre um conjunto pequeno de treinamento.
+O conjunto de classificadores é construído como pode ser visto no algoritmo abaixo:
+
+\begin{algorithm}[h]
+\caption{Random Subspace}
+\label{alg:randomsubspace}
+\begin{enumerate}
+\item Considere um número de objetos de treinamento $N$ e o número de características do conjunto de dados como sendo $D$.
+\item Atribua $L$ como sendo o número de classificadores do conjunto de classificadores.
+\item Para cada classificador individual $I$, escolha $d_i$ ($d_i$ < $D$) como sendo o número de variáveis de entrada para $I$.
+\item Para cada classificador individual $I$, crie um conjunto de treinamento escolhendo $d_i$ características de $D$ sem reposição e treine o classificador.
+\item Para classificar um novo objeto, combine as saídas de cada classificador individual $L$ utilizando a maioria dos votos com pesos.
+\end{enumerate}
+
+\end{algorithm}
+
+
+
+\section{Boosting}
+
+\subsection{Origem do Algoritmo Boosting}
+
+Podemos dizer que \textit{Boosting} é um método geral para melhorar a precisão de uma classificação[219]. Este algoritmo foi desenvolvido por Schapire em 1990 [40 review] e o objetivo deste método é produzir um classificador forte a partir de um conjunto de vários classificadores fracos. Um classificador é dito fraco quando este tem uma taxa de acerto boa, mas somente para uma porção da base de dados. Por isso a ideia de combinar vários classificadores ditos fracos para formar uma combinação de classificadores que tem uma precisão melhor. Um analogia favorável ao entendimento é que um classificador fraco é um bom classificador para um determinado domínio, e a junção de vários classificadores fracos forma uma combinação de classificadores forte.
+
 O método \textit{boosting} treina iterativamente cada classificador atribuindo a cada instância um peso após este treinamento. Os pesos de cada instância são acrescidos quando esta instância é classificada incorretamente e analogamente este peso é decrementado quando classificado corretamente. Isto faz com que cada classificador foque nos exemplos mais difíceis. Depois que a cominação de classificadores for gerada, uma regra de escolha é usada,  maioria dos votos por exemplo. 
 
-\subsection{AdaBoost}
+\subsection{A Razão do Boosting Funcionar}
+
+Um ponto bastante positivo desta família de algoritmos é sua convergência rápida da taxa de erro do conjunto de treinamento para valores ditos como bons, praticamente nas primeiras iterações. O meio usado para criar as bases de dados consiste em usar uma distribuição balanceada de instâncias fáceis e instâncias difíceis [42 review]. As instâncias difíceis são detectadas pelos classificadores fora do conjunto. Uma instância é considerada difícil quando é classificada de forma incorreta pelo conjunto de classificadores formado por aqueles classificadores que não usaram esta instância no seu treinamento.
+
+\subsection{Variantes do Algoritmo Boosting}
+
+As seções abaixo mostra algumas variantes do algoritmo têxtil{boosting}, bem como o seu funcionamento e definição.
+
+\subsubsection{AdaBoost}
 Um dos mais famosos algoritmos da família \textit{boosting} é o \textit{AdaBoost}, este algoritmo foi a primeira abordagem prática do \textit{Boosting} e hoje é apontando como um dos top dez dos algoritmos de aprendizagem de máquina[94 review] . Este algoritmo utiliza todo o conjunto de dados para treinar cada classificador, mas a cada iteração é dado um foco maior a instâncias difíceis de classificar. O objetivo é classificar corretamente na próxima iteração uma instância que foi classificada de forma errada na iteração atual. Com isso, é dado um foco maior em instâncias que são difíceis de se classificar.
 Depois de cada iteração, os pesos das instâncias que foram classificadas de forma errada são aumentando; e em contraste, os pesos das instâncias que foram classificadas corretamente são decrementados. Além disso outro peso é atribuído a cada classificador individual, dependendo da sua taxa de acerto na fase de treinamento.
 Finalmente, quando uma nova instância é apresentada, cada classificador dá um voto, e a classe selecionada foi a que obteve a maioria dos votos. Lembrando que os classificadores possuem pesos diferentes nas votações. O algoritmo pode ser conferido abaixo.
 
-% TODO - ver outro código ou traduzir e rever
 \begin{algorithm}[h]
 \caption{AdaBoost}
-\label{alg:1}
+\label{alg:adaboost}
 \begin{algorithmic}[1]
 \STATE \textbf{ENTRADA:}
 \item Conjunto de Treinamento: $\mathcal{D} = \{(x_i, y_i), i=1, \ldots, N
 \}$, onde $x_i \in \mathbf{R}^d$ e $y_i \in \{-1, +1\}$.
 \item O número de amostras em cada iteração: $m$
-\item Classificador Fraco: $\mathcal{L}$ that automatically learns a binary classifier $h(x): \mathbf{R}^d \mapsto \{-1, +1\}$
+\item Classificador Fraco: $\mathcal{L}$ que automaticamente aprende um classificador binário $h(x): \mathbf{R}^d \mapsto \{-1, +1\}$
 de um conjunto de treinamento.
 \item O número de iterações: $T$
 \STATE \textbf{SAÍDA:}
 \item O Classificador Final: $H(x) = sign\left(\sum_{t=1}^T \alpha_t h_t(x) \right)$
 
-\STATE \textbf{Algorithm}
+\STATE \textbf{Algoritmo}
 
 \STATE Inicialize a distribuição $D_0(i) = 1/N, i=1, \ldots, N$
 
 \FOR{$t = 1$ até $T$}
 
-\STATE Sample $m$ examples with replacement from $\mathcal{D}$
+\STATE Escolha $m$ exemplos com reposição de $\mathcal{D}$
 de acordo com a distribuição $D_{t-1}(i)$.
 
 \STATE Treine o classificador $h_t(x)$ usando os exemplos da amostra
 
 \STATE Compute a taxa de erro $\varepsilon_t = \sum_{i=1}^N
-D_{t-1}(i) I(h_t(x_i) \neq y_i)$ onde $I(z)$ outputs $1$ quando $z$
+D_{t-1}(i) I(h_t(x_i) \neq y_i)$ onde $I(z)$ dá como saída $1$ quando $z$
 é verdadeiro e zero caso contrário.
 
-\STATE Saia do loop se $\varepsilon > 0.5$.
+\STATE Saia do laço se $\varepsilon > 0.5$.
 
 \STATE Compute o peso como $\alpha_t$ em
 \[\alpha_t = \frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) \]
 
 \STATE Atualize a distribuição em as
 \[ D_t(i) = \frac{1}{Z_t} D_{t-1}(i)\exp(\alpha_tI(y_i \neq h_t(x_i))\]
-where $Z_t = \sum_{i=1}^N D_{t-1}(i)\exp(\alpha_tI(y_i \neq
+onde $Z_t = \sum_{i=1}^N D_{t-1}(i)\exp(\alpha_tI(y_i \neq
 h_t(x_i))$.
 
 \ENDFOR
 
-\STATE Construct the final classifier $H(x) = sign(\sum_{t=1}^T
+\STATE Construa o classificador final $H(x) = sign(\sum_{t=1}^T
 \alpha_t h_t(x))$.
 
 \end{algorithmic}
 \end{algorithm}
 
-% FIM DO TODO
+\subsubsection{AdaBoost.M1}
 
+\subsubsection{AdaBoost.M2}
+
+\section{Qual a melhor abordagem: \textit{Bagging} ou \textit{Boosting}}
+
+Em princípio este tipo de pergunta se apresenta de forma mal colocada partindo do pressuposto que não existe o melhor método para todos os casos. No entanto, vários autores têm comparado as duas abordagens e gerando vários resultados [106, 116, 236, 238, 239 livro].  O consenso geral é de que os métodos \textit{boosting} alcançam uma menor taxa de erro. No entanto, algoritmos baseados em \textit{boosting} são sensíveis a ruídos e \textit{outliers}, especialmente quando a base de dados é pequena [116,236,239]. 
 
 \section{ICS-Bagging}
 O algoritmo ICS-Bagging,  acrônimo de \textit{Iteractive Classifier Selection Baggin},  é o ponto central e objetivo de estudo deste trabalho. Por isso um maior grau de detalhamento se faz necessário. O ICS-Bagging é baseado em uma inicialização iterativa para formar o conjunto de classificadores. Cada iteração gera um conjunto de classificadores e seleciona o melhor classificador deste conjunto. A amostragem de inicialização usa uma probabilidade de amostragem a partir de cada classe, sendo esta probabilidade derivada a partir da taxa de erro da classe. O algoritmo abaixo descreve o funcionamento do ICS-Bagging.
 \begin{algorithm}[H]
-%\begin{algorithm*}
-%\begin{figure*}
+
 \caption{ICS-Bagging}
 \begin{algorithmic}[1]
 	\REQUIRE $\mathcal{T}$: conjunto de treinamento.
@@ -210,4 +292,14 @@ E como foi mencionado anteriormente, a motivação de se atualizar os pesos é aume
 
 \textbf{Retorne a \textit{pool}}: A \textit{pool} final de classificadores é retornada.
 %\end{enumerate}
+
+Um esquema do fluxo de funcionamento do algoritmo ICS-Bagging pode ser visto na figura \ref{fig:icsbaggingesquema}.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.45]{imagens/icsbaggingesquema-2.png}
+\caption{Arquitetura do ICS-Bagging. Onde L é o conjunto final de classificadores.}
+\label{fig:icsbaggingesquema}
+\end{figure}
+
 

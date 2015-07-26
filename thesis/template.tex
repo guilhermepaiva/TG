@@ -35,6 +35,7 @@
 \usepackage{algorithmic}
 \usepackage{subfigure}
 \usepackage{appendix}
+\usepackage{longtable}
 
 \algsetup{linenosize=\small,linenodelimiter=.}
 \hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
@@ -77,11 +78,11 @@
 
 % Título da dissertação/tese
 % e.g. \title{Sobre a conjectura $P=NP$}
-\title{<TÍTULO DA OBRA>}
+\title{Combinação de Classificadores e Análise do Algoritmo ICS-Bagging}
 
 % Data da defesa
 % e.g. \date{19 de fevereiro de 2003}
-\date{<DATA DA DEFESA>}
+\date{31 de julho de 2015}
 
 % Autor
 % e.g. \author{José da Silva}
@@ -117,13 +118,13 @@
 % Dedicatória
 % Comente para ocultar
 \begin{dedicatory}
-Dedico este trabalho à ...
+Dedico este trabalho a Deus por tudo. Aos meus familiares, todos eles, por terem me dado incentivo a educação. E à minha esposa por ter me dado todo o suporte e compreensão. 
 \end{dedicatory}
 
 % Agradecimentos
 % Se preferir, crie um arquivo à parte e o inclua via \include{}
 \acknowledgements
-<DIGITE OS AGRADECIMENTOS AQUI>
+Agradeço primeiramente a Deus por possibilitar que tudo seja feito, e que esteve ao meu lado durante essa jornada. Agradeço ao meu pai, Leônidas Santos de Paiva por me servir de modelo e exemplo, agradeço a minha mãe Maria Augusta Leite Moreira por sempre me incentivar a estudar cada vez mais. Agradeço muito a minha avó paterna Maria Leonor Santos de Paiva por sempre me dar forças e me lembrar, a partir do seu exemplo, que se pode chegar aonde quiser. Agradeço a minha esposa, Verônica da Silva Cordeiro de Paiva por sempre estar do meu lado e ser minha companheira em todos os momentos. Agradeço ao professor George Darmiton por despertar em mim o interesse pela área de Aprendizagem de Máquina e por me despertar a sede pela pesquisa e pela ciência. Agradeço muito ao Dayvid Victor por ter me ajudado, orientado e liderado pelo exemplo.
 
 % Epígrafe
 % Comente para ocultar
@@ -141,10 +142,11 @@ Dedico este trabalho à ...
 % Resumo em Português
 % Se preferir, crie um arquivo à parte e o inclua via \include{}
 \resumo
-<DIGITE O RESUMO AQUI>
+Em muitas situações de tomada de decisão é mais confiável consultar a opinião de várias pessoas para que uma decisão seja tomada de forma mais acertada. Analogamente, esse conceito foi transportado para aprendizagem de máquina sob a forma de combinação de classificadores. Várias maneiras de se combinar classificadores foram propostas, cada uma com suas particularidades, pontos fortes e fracos. 
+Este trabalho tem como objetivo ter uma visão geral dos algoritmos de combinação de classificadores canônicos que servem de base para diversos outros algoritmos, bem como em especial o algoritmo ICS-Bagging. Este terá seus parâmetros analisados e comparados com os principais algoritmos de combinação de classificadores.
 % Palavras-chave do resumo em Português
 \begin{keywords}
-<DIGITE AS PALAVRAS-CHAVE AQUI>
+Combinação de Classificadores, Diversidade, Bagging, Boosting, Adaboost, ICS-Bagging.
 \end{keywords}
 
 % Resumo em Inglês
@@ -199,7 +201,7 @@ Dedico este trabalho à ...
 % É aconselhável criar cada apêndice em um arquivo à parte, digamos
 % "apendice1.tex", "apendice.tex", ... "apendiceM.tex" e depois
 % incluí-los com:
-% \include{apendice1}
+\include{apendice-a/apendice-a}
 % \include{apendice2}
 % ...
 % \include{apendiceM}
@@ -216,7 +218,7 @@ Dedico este trabalho à ...
 % Cólofon
 % Inclui uma pequena nota com referência à UFPEThesis
 % Comente para omitir
-\colophon
+%\colophon
 
 %% Fim do documento
 \end{document}

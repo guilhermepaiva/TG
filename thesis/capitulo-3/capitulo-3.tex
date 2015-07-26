@@ -1,3 +1,340 @@
 \chapter{Análise dos Experimentos}
 
-\section{Primeira Seção}
+Esta seção apresenta a metodologia e os resultados dos experimentos feitos para a variação dos parâmetros da função de \textit{fitness} do algoritmo ICS-Bagging. 
+
+\section{Metodologia do Experimento Base}
+
+Os parâmetros do algoritmo ICS-Bagging foram avaliados utilizando 15 bases obtidas do repositório KEEL [31]. As bases de dados são binárias e possuem taxa de balanceamento crescente, taxa esta que é dada pelo número de exemplos da classe majoritária, divido pelo número de exemplos da classe minoritária. As bases utilizadas neste experimento estão descritas na Tabela \ref{tab:datasets}, que mostra o número de exemplos, o número de atributos, distribuição das classes e a taxa de balanceamento (IR - \textit{Imbalance Ratio}). 
+
+\begin{table}[H]
+\caption{Características das Bases de Dados}
+\begin{center}
+\begin{tabular}{clcccc}
+\hline
+	Rótulo &	Nome    &   Padrões  &   Atributos   &   \% (min., maj.) & IR\\
+\hline
+\hline
+1	&	Glass1	&	214	&	9	&	(35.51, 64.49)  &   1.82\\
+2	&	Pima    &	768 &	8	&	(34.84, 66.16)  &   1.90\\
+3	&	Iris0	&	150	&	4	&	(33.33, 66.67)  &   2.00\\
+4	&	Yeast1	&	1484&	8	&	(28.91, 71.09)  &   2.46\\
+5	&	Vehicle2&	846	&	18	&	(28.37, 71.63)  &   2.52\\
+6	&	Vehicle3&	846	&	18	&	(28.37, 71.63)  &   2.52\\
+7	&	Ecoli1	&	336	&	7	&	(22.92, 77.08)  &   3.36\\
+8	&	Ecoli2	&	336	&	7	&	(15.48, 84.52)  &   5.46\\
+9	&	Glass6	&	214	&	9	&	(13.55, 86.45)  &   6.38\\
+10	&	Yeast3	&	1484&	8	&	(10.98, 89.02)  &   8.11\\
+11	&	Ecoli3	&	336	&	7	&	(10.88, 89.12)  &   8.19\\
+12	&   Vowel0  &   998 &   13	&   (9.10, 90.9)    &   9.98\\
+13	&	Glass4	&	214	&	9	&	(6.07, 93.93)   &   15.47\\
+14	&	Ecoli4	&	336	&	7	&	(5.95, 94.05)   &   15.8\\
+15	&	Page-blocks13vs4&	472	&	10	&	(5.93, 94.07)   &   15.85\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:datasets}
+\end{table}
+
+As bases de dados foram particionadas utilizando o procedimento \textit{5-fold cross validation}, que significa que cada conjunto de dados foi dividido em 5 subconjuntos (cada um com 20"\%" das amostras) e os experimentos foram executados cinco vezes, cada iteração com um dos subconjuntos para teste e os demais para treinamento. A partição foi feta respeitando a proporção entre as classes.
+
+As métricas de avaliação foram acurácia e diversidade. Para acurácia na classificação foi utilizado a área sobre a curva ROC (AUC). Para diversidade, nestes primeiros experimentos, foi utilizada a medida de entropia. Os parâmetros utilizados nos algoritmos podem ser conferidos na Tabela \ref{tab:param}.
+
+\begin{table}[H]
+\begin{center}
+\caption{Algoritimos e parametros}
+\begin{tabular}{ll}
+\hline
+Algoritmo	                    &    Parâmetro	                                        \\
+\hline
+\hline
+ICS-Bagging                     &   $N = 40$, \textit{repetição = Sim}              \\
+                                &   $K = 5$, $\alpha=0.75$                         \\
+\hline
+Bagging                         &   $N = 40$, \textit{repetição = Sim}             \\
+\hline
+RandomSubspace                  &   $N = 40$, \textit{features}$_{max} = 0.3$             \\
+\hline
+\end{tabular}
+\label{tab:param}
+\end{center}
+\end{table}
+
+O classificador base utilizado nos experimentos foi uma árvore de decisão de profundidade máxima 9, e o número mínimo de amostras necessárias para ser um nó folha como sendo 1. A regra de combinação foi a maioria dos votos simples.
+
+\subsection{Análise e Resultados do Experimento Base}
+
+A Tabela \ref{tab:param} mostra a média e o desvio padrão da AUC dos três algoritmos que são objetivo destes experimentos nas configurações propostas.  
+
+% !TEX encoding = ISO88591
+
+\begin{table*}[!htbp]
+\center
+\caption{Média e Desvio Padrão da AUC}
+\begin{tabular}{lcccccccccc}
+
+\hline
+\multicolumn{1}{c}{Conjunto de Dados} & \multicolumn{ 2}{c}{ICS-Bagging-40} &\multicolumn{ 2}{c}{Bagging-40} & \multicolumn{ 2}{c}{RandomSubspace-40} \\ 
+\hline
+\hline
+glass1 & \textbf{0.7923} & \textbf{0.0500} & 0.7521 & 0.0529 & 0.7576 & 0.0816 \\ 
+pima & \textbf{0.7390} & \textbf{0.0194} & 0.7215 & 0.0227 & 0.6328 & 0.0295 \\ 
+iris0 & \textbf{1.0000} & \textbf{0.0000} & \textbf{1.0000} & \textbf{0.0000} & \textbf{1.0000} & \textbf{0.0000} \\ 
+yeast1 & \textbf{0.7309} & \textbf{0.0343} & 0.6810 & 0.0187 & 0.5325 & 0.0148 \\ 
+vehicle2 & 0.9592 & 0.0168 & 0.9594 & 0.0225 & \textbf{0.9633} & \textbf{0.0129} \\ 
+vehicle3 & \textbf{0.7368} & \textbf{0.0188} & 0.6600 & 0.0226 & 0.6327 & 0.0278 \\ 
+ecoli1 & \textbf{0.8722} & \textbf{0.0497} & 0.8480 & 0.0454 & 0.7672 & 0.0887 \\ 
+ecoli2 & \textbf{0.8855} & \textbf{0.0495} & 0.8714 & 0.0464 & 0.7283 & 0.0357 \\ 
+glass6 & \textbf{0.8917} & \textbf{0.0190} & 0.8865 & 0.0624 & 0.8640 & 0.0836 \\ 
+yeast3 & \textbf{0.9089} & \textbf{0.0273} & 0.8434 & 0.0337 & 0.5030 & 0.0061 \\ 
+ecoli3 & \textbf{0.8047} & \textbf{0.0967} & 0.7724 & 0.0677 & 0.6279 & 0.0708 \\ 
+vowel0 & 0.9483 & 0.0573 & \textbf{0.9589} & \textbf{0.0540} & 0.9278 & 0.0572 \\ 
+glass4 & \textbf{0.8750} & \textbf{0.1877} & 0.7467 & 0.1654 & 0.6475 & 0.1362 \\ 
+ecoli4 & 0.8405 & 0.1143 & \textbf{0.8671} & \textbf{0.1326} & 0.7000 & 0.1000 \\ 
+page-blocks-1-3\_vs\_4 & \textbf{0.9978} & \textbf{0.0045} & 0.9766 & 0.0414 & 0.8733 & 0.0712 \\ 
+\hline
+Average & \textbf{0.8655} & \textbf{0.0497} & 0.8363 & 0.0526 & 0.7439 & 0.0544 \\ 
+\end{tabular}
+\label{tab:auc_40}
+\end{table*}
+
+A Tabela \ref{tab:param} mostra a média e o desvio padrão e da medida de diversidade Entropia dos três algoritmos que são objetivo destes experimentos nas configurações propostas.
+
+\begin{table*}[!htbp]
+\center
+\caption{Média e Desvio Padrão da Medida Entropia $E$}
+\begin{tabular}{lcccccccccc}
+\hline
+\multicolumn{1}{c}{Conjunto de Dados} & \multicolumn{ 2}{c}{ICS-Bagging-40} & \multicolumn{ 2}{c}{Bagging-40} & \multicolumn{ 2}{c}{RandomSubspace-40} \\ 
+\hline
+\hline
+glass1 & 0.4445 & 0.0560 & 0.3786 & 0.0531 & \textbf{0.4604} & \textbf{0.0347} \\ 
+pima & 0.4284 & 0.0133 & 0.4131 & 0.0196 & \textbf{0.4966} & \textbf{0.0216} \\ 
+iris0 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & \textbf{0.0073} & \textbf{0.0060} \\ 
+yeast1 & \textbf{0.4342} & \textbf{0.0230} & 0.3410 & 0.0029 & 0.2727 & 0.0222 \\ 
+vehicle2 & 0.1006 & 0.0148 & 0.0886 & 0.0126 & \textbf{0.1699} & \textbf{0.0204} \\ 
+vehicle3 & \textbf{0.3900} & \textbf{0.0219} & 0.3661 & 0.0177 & 0.3349 & 0.0382 \\ 
+ecoli1 & 0.1542 & 0.0361 & 0.1456 & 0.0337 & \textbf{0.2965} & \textbf{0.0475} \\ 
+ecoli2 & 0.1556 & 0.0440 & 0.1216 & 0.0286 & \textbf{0.2174} & \textbf{0.0281} \\ 
+glass6 & 0.1108 & 0.0550 & 0.0613 & 0.0148 & \textbf{0.1265} & \textbf{0.0313} \\ 
+yeast3 & 0.0767 & 0.0076 & 0.0825 & 0.0086 & \textbf{0.1158} & \textbf{0.0119} \\ 
+ecoli3 & 0.1187 & 0.0364 & 0.1246 & 0.0290 & \textbf{0.1710} & \textbf{0.0476} \\ 
+vowel0 & 0.0346 & 0.0176 & 0.0299 & 0.0069 & \textbf{0.0994} & \textbf{0.0093} \\ 
+glass4 & 0.0684 & 0.0299 & 0.0944 & 0.0312 & \textbf{0.1026} & \textbf{0.0363} \\ 
+ecoli4 & 0.0460 & 0.0228 & 0.0333 & 0.0151 & \textbf{0.0984} & \textbf{0.0284} \\ 
+page-blocks-1-3\_vs\_4 & 0.0052 & 0.0065 & 0.0269 & 0.0090 & \textbf{0.0524} & \textbf{0.0152} \\ 
+\hline
+\multicolumn{1}{c}{Média} & 0.1712 & 0.0257 & 0.1538 & 0.0189 & \textbf{0.2015} & \textbf{0.0266} \\ 
+\hline
+\end{tabular}
+\label{tab:div_40}
+\end{table*}
+
+\subsubsection{Conclusão} 
+
+Como pode ser notado na Tabela \ref{tab:param}, o algoritmo ICS-Bagging apresentou a melhor média de AUC quando comparado com os algoritmos \textit{Bagging} e \textit{Random Subspace}. Já quando se compara os resultados obtidos da medida de entropia $E$, o algoritmo \textit{Random Subspace} apresenta melhor média de diversidade. Isto se deve por conta que o algoritmo \textit{Random Subspace} somente seleciona parte das características de cada classificador, e isto se mostra como sendo mais efetivo do que selecionar parte dos dados para cada classificador. Esta última informação é de suma importância por fazer um comparativo com a base do algoritmo \textit{bagging}.
+
+\section{Metodologia dos demais Experimentos}
+
+Para os demais experimentos foram mantidas algumas considerações do experimento base, tais como: as mesmas 15 bases, com os dados binária e possuem taxa de balanceamento crescente. A configuração das bases pode ser conferida na Tabela \ref{tab:datasets}. 
+No entanto, para o primeiro experimento foi utilizado LHS, que é um método estatístico para geração de coleções de parâmetros de uma distribuição multinomial [colocar ref da wiki]. Este método foi utilizado por ser bastante comum na geração de amostras de parâmetros com fins de experimentos computacionais. Este primeiro experimento teve como objetivo encontrar alguma relação entre os parâmetros da função de \textit{fitness} do algoritmo ICS-Bagging.
+
+\section{Análise e Resultados do Primeiro Experimento - Geração de amostras utilizando LHS}
+
+Este primeiro experimento tem como objetivo gerar diversas configurações possíveis para $K$ e $alfa$ com a finalidade de levantar alguma hipótese. Em conjunto com possíveis hipóteses a serem levantadas, será escolhida a melhor configuração e a mesma será analisada posteriormente.
+
+\subsection{Análise e Resultados}
+
+Como foi mencionado anteriormente, o primeiro experimento gerou uma série de configurações possíveis para 100 amostras utilizando o método LHS de forma que para cada amostra gerada é obtido um valor para o número de classificadores da \textit{pool} $K$ e o valor para o parâmetro alfa da função de \textit{fitness}. Para cada configuração gerada, ou seja, cada combinação de valor de alfa e de $K$ foi calculada a média e o desvio padrão das 15 bases que são objetivo deste trabalho. O apêndice \ref{ch:appendixa} detalha todas as combinações utilizadas neste primeiro experimento bem como os resultados da média e desvio padrão. E a Figura \ref{tab:figprimeiros} mostra os 10 melhores resultados dos 100 gerados.
+
+\begin{table*}[!htbp]
+
+\caption{Dez melhores configurações utilizando LHS}
+\begin{tabular}{lcccccccccc}
+\hline
+\multicolumn{1}{c}{Experimento} & \multicolumn{ 1}{c}{Alfa} & \multicolumn{ 1}{c}{K} & \multicolumn{ 1}{c}{Média} & \multicolumn{ 1}{c}{Desvio Padrão} \\ 
+\hline
+\hline
+Experimento 5 & 0.0505791514132 & 9 & 0.8804600000000 & 0.0848489937084 \\
+Experimento 26 & 0.262644897321 & 12 & 0.8799800000000 & 0.0834441066423 \\
+Experimento 2 & 0.0202494447442 & 13 & 0.8799133333330 & 0.0854376253311 \\
+Experimento 21 & 0.212149809235 & 7 & 0.8794800000000 & 0.0852588231993 \\
+Experimento 11 & 0.111150784393 & 14 & 0.8788533333330 & 0.0851454588076 \\
+Experimento 44 & 0.444499921896 & 17 & 0.8788533333330 & 0.0848942625990 \\
+Experimento 43 & 0.434370633338 & 18 & 0.8784800000000 & 0.0859109399320 \\
+Experimento 15 & 0.151536054488 & 17 & 0.8783933333330 & 0.0858358469535 \\
+Experimento 52 & 0.525291411015 & 11 & 0.8779200000000 & 0.0838991871236 \\
+Experimento 23 & 0.232315494974 & 12 & 0.8773866666670 & 0.0832561738785 \\
+\hline
+\end{tabular}
+\label{tab:figprimeiros}
+\end{table*}
+
+Para um melhor entendimento destes resultados, a Figura \ref{fig:plotlhsdez} mostra os resultados da AUC relacionado com o parâmetro alfa. E pode ser notado que a AUC obedece uma tendência de baixa quando o alfa cresce, independente do valor do $K$.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/lhs10melhoresdots.png}
+\caption{AUC x Alfa}
+\label{fig:plotlhsdez}
+\end{figure}
+
+Por outro lado, a Figura \ref{fig:plotlhsdezk} mostra os resultados da AUC relacionado com o valor de $K$. E nota-se a ausência de um padrão bem definido com relação aos parâmetros analisados.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/lhs10melhoresdotsk.png}
+\caption{AUC x K}
+\label{fig:plotlhsdezk}
+\end{figure}
+
+
+\subsubsection{Conclusão - Geração de amostras utilizando LHS} 
+
+Há de se ter cuidado ao inferir resultados a partir dos dez melhores resultados e generalizar para toda a amostra e até mesmo é casos mais gerais e amostras até maiores. No entanto, ao desenvolver a mesma tarefa dos dez melhores resultados a base inteira de cem resultados as hipóteses ainda se confirmam, mesmo que de forma um pouco menos clara. Algum ruído pode ser observado e um padrão exato em todos os pontos não pode ser observado para o caso do decrescimento da AUC ao se diminuir o parâmetro alfa, porém a tendência de baixa de mantêm. A Figura \ref{fig:plotcemalfa} mostra toda as cem experimentações relacionando a AUC e o parâmetro alfa. Para o caso do valor de $K$ nenhum padrão pode ter sido estabelecido, no entanto, valores de $K$ muito próximos a 20 possuem um decaimento abrupto no valor da AUC que precisa ser investigado de forma mais precisa. A Figura \ref{fig:plotcemk} mostra os resultados da relação entre a AUC e o valor de $K$. 
+
+Importante salientar que a Figura \ref{fig:plotcemalfa} e a Figura \ref{fig:plotcemk} foram construídas utilizando curvas \textit{splines} para que houvesse interpolação entre os dados e algum tipo de inferência quanto aos resultados pudesse ser tomado.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/lhs100alfa.png}
+\caption{AUC x Alfa}
+\label{fig:plotcemalfa}
+\end{figure}
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/lhs100k.png}
+\caption{AUC x K}
+\label{fig:plotcemk}
+\end{figure}
+
+\section{Análise e Resultados do Segundo Experimento - $K$ Fixo em 5}
+
+O objetivo deste experimento é analisar as implicações da variação do parâmetro $alfa$ quando temos a variável $K$ fixada.
+
+\subsection{Análise e Resultados}
+
+Neste segundo experimento, o valor do parâmetro $K$ foi fixado em 5. Desta forma, o valor de $K$, que é o número de classificadores a serem adicionados a cada iteração é fixado para que possa ser analisado o comportamento do valor de alfa. Por isso, o valor de alfa será analisado variando-o de 0.0 até 1.0. O resultado deste experimento pode ser visto na Tabela \ref{tab:tabkfixo}.
+
+\begin{table*}[!htbp]
+
+\centering
+
+\caption{Resultado dos Experimentos para K fixo em 5 e Alfa variando de 0 a 1}
+\begin{tabular}{lcccccccccc}
+
+\hline
+\multicolumn{ 1}{c}{Alfa} & \multicolumn{ 1}{c}{Média da AUC} & \multicolumn{ 1}{c}{Desvio Padrão} \\ 
+\hline
+\hline
+0.0 & 0.87388 & 0.0852539907179 \\
+0.1 & 0.873333333333 & 0,0856087897875 \\
+0.2 & 0.87086 & 0.0904865500134 \\
+\textbf{0.3} & \textbf{0.87504} & \textbf{0.0869947569301} \\
+0.4 & 0.8695 & 0.0890983501531 \\
+0.5 & 0.864113333333 & 0.0872420530606 \\
+0.6 & 0.86806 & 0.0891251838708 \\
+0.7 & 0.870633333333 & 0.0883060712648 \\
+0.8 & 0.866206666667 & 0.0907677950719 \\
+0.9 & 0.867326666667 & 0.0884994347753 \\
+1.0 & 0.865386666667 & 0.0898583022814 \\
+\hline
+\end{tabular}
+\label{tab:tabkfixo}
+\end{table*}
+
+Como pode ser visto na Figura \ref{fig:kfixorangemenor}, a AUC decresce com o aumento do valor de alfa. Esse decréscimdo se dá de forma suave ao se olhar de uma perspectiva mais ampla. Um consequência direta deste fato é que como o alfa é um parâmetro da função de \textit{fitness} e define a proporção entre diversidade e acurácia da \textit{pool} de classificadores, então valores para alfa menor dão uma ênfase maior ao componente diversidade da função de \textit{fitness}. Lembrando que a função de \textit{fitness} é definida como abaixo:
+
+\begin{equation}
+\text{\textit{fitness}} = \alpha \times \text{\textit{ACC}} + (1 - \alpha) \times \text{\textit{DIV}}
+\label{eq:fitness}
+ \end{equation}
+ 
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/AUCvsAlfarangemenorkfixo.png}
+\caption{AUC x Alfa}
+\label{fig:kfixorangemenor}
+\end{figure}
+
+Por outro lado, este enfoque da Figura \ref{fig:kfixorangemenor} não ressalta informações mais sensíveis. De forma que alguns comportamentos dos dados não são percebidos com uma visão distante da informação. A Figura \ref{fig:fixo} mostra a distribuição deste experimento com um nível maior de detalhamento. Nela pode ser notado que obedece aos comentários já tecidos anteriormente que mencionam a tendência de decréscimo do valor da AUC quando o valor de $alfa$ diminui. No entanto, três pontos em particular do gráfico chamam a atenção. O ponto onde a AUC é maior é para o valor de alfa 0.3, e o ponto onde a AUC volta a aumentar é para o valor de alfa igual a 0.7. Levantando uma hipótese sobre a distribuição da diversidade e da acurácia da função de \textit{fitness} ter um comportamento proporcional entre 30\% e 70\% de distribuição.
+
+Mais importante ainda, é a informação obtida de que quando o alfa se torna igual a 0.5 a AUC tem o pior resultado. Evidenciando que ao colocar a mesma proporção na função de \textit{fitness} para a diversidade e para a acurácia o resultado foi o pior dentre os demais. 
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/AUCvsAlfakfixo.png}
+\caption{AUC x Alfa}
+\label{fig:kfixo}
+\end{figure}
+
+\subsection{Conclusão - K Fixo em 5}
+
+Partindo deste segundo experimento algumas informações relevantes puderam ser extraídas. Quando a proporção do alfa torna os pesos iguais para diversidade e acurácia na função de \textit{fitness}, ou seja, o alfa é igual a 0.5, então o valor da AUC é o pior possível. Desta forma, manter proporções iguais para as duas medidas não oferece vantagem.
+
+Outra informação importante foi obtida notando a proporção de 30\% e 70\% para alfa obteve resultados bons. Melhor quando a proporção foi de 30\%, evidenciando a importância da diversidade neste algoritmo.
+
+\section{Análise e Resultados do Terceiro Experimento - $alfa$ Fixo em 0.05}
+
+O objetivo deste experimento é analisar as implicações da variação do parâmetro $K$ quando temos a variável $alfa$ fixada. Desta forma é possível observar a importância do parâmtro $K$ no algoritmo ICS-Bagging. O valor de $alfa$ foi fixado em 0.05 por ter sido o melhor resultado obtido no primeiro experimento.
+
+\subsection{Análise e Resultados}
+
+Neste terceiro experimento o valor de $K$ foi analisado entre os valores de 1 a 10. A Tabela \ref{tab:tabalfafixo} mostra os resultados deste experimento, onde pode ser notado que o melhor resultado obtido foi para o valor de $K$ = 10. Mas não somente isso, o valor de $K$ se relaciona de maneira crescente com a AUC, ou seja, quanto maior o valor de $K$ maior a AUC. 
+
+\begin{table*}[!htbp]
+
+\centering
+
+\caption{Resultado dos Experimentos para alfa fixo em 0.05 e Alfa variando de 1 a 10}
+\begin{tabular}{lcccccccccc}
+
+\hline
+\multicolumn{ 1}{c}{K} & \multicolumn{ 1}{c}{Média da AUC} & \multicolumn{ 1}{c}{Desvio Padrão} \\ 
+\hline
+\hline
+1 & 0.868446666667 & 0.0883055971549 \\
+2 & 0.87052 & 0.0864033811067 \\
+3 & 0.86972 & 0.0865383013469 \\
+4 & 0.86882 & 0.0888397148427 \\
+5 & 0.873033333333 & 0.0871429298464 \\
+6 & 0.873146666667 & 0.0862880437192 \\
+7 & 0.877193333333 & 0.0856610332778 \\
+8 & 0.8763 & 0.0850978730639 \\
+9 & 0.87224 & 0.0874269889679 \\
+\textbf{10} & \textbf{0.877506666667} & \textbf{0.0845944715819} \\
+\hline
+\end{tabular}
+\label{tab:tabalfafixo}
+\end{table*}
+
+A relação entre a AUC e o valor de $K$ para o alfa fixo em 0.05 pode ser melhor percebido na Figura \ref{fig:alfafixo}, onde pode ser visto que quando maior o valor do $K$ maior a AUC.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.75]{imagens/auc_k_alfa-fixo005-line.png}
+\caption{AUC x Alfa}
+\label{fig:kfixo}
+\end{figure}
+
+\subsection{Conclusão - alfa Fixo em 0.05}
+
+Após realizar os experimentos com o $alfa$ fixado em no valor de 0.05 e a variável $K$ variando entre 1 e 10, pode ser concluído que quanto maior o valor do $K$, maior o valor da AUC. Ou seja, o número de classificadores a serem adicionados a cada iteração possui um fator relevante nos resultados, de forma que quanto maior o número de classificadores adicionados a cada iteração, melhores são os resultados obtidos. 
+
+\section{Análise e Resultados do Quarto Experimento - Número de Classificadores reduzido e $K$ fixo}
+
+Nesse quarto experimento será usado o número de classificadores igual a 10, o valor de k será fixado em 5 e o alfa será incrementado de 0.0 a 1.0. O objetivo deste e do próximo experimento é tentar avaliar de forma mais perceptiva as hipóteses e conclusões que surgiram nas seções anteriores. Ao se reduzir o número de classificadores espera-se que seja enfatizado a correlação de alfa com AUC e de $K$ com AUC. 
+
+\subsection{Análise e Resultados}
+
+\subsection{Conclusão - Número de Classificadores reduzido e alfa variando}
+
+\section{Análise e Resultados do Quinto Experimento - Número de Classificadores reduzido e $alfa$ fixo}
+
+Nesse quinto experimento será usado o número de classificadores igual a 10, o valor de k será variado de 1 a 5 e o alfa será fixo em (melhor resultado do quarto experimento)
+
+\subsection{Análise e Resultados}
+
+\subsection{Conclusão - Número de Classificadores reduzido e alfa variando}
+
